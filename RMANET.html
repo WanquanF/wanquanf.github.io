@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(){function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return;
+    }
+    const message = event.data;
+    switch (message.method) {
+      case 'updateLocation':
+        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
+          hookedObj.genLat = message.info.coords.lat;
+          hookedObj.genLon = message.info.coords.lon;
+          hookedObj.fakeGeo = message.info.fakeIt;
+        }
+        break;
+      default:
+        break;
+    }
+  }, false);
+  //]]>
+}hookGeo();})()</script>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Recurrent Multi-view Alignment Network for Unsupervised Surface Registration</title>
+    <!-- Bootstrap -->
+    <link href="./RMANET_files/bootstrap-4.4.1.css" rel="stylesheet">
+    <link rel="stylesheet" href="./RMANET_files/font-awesome.min.css">
+</head>
+
+<!-- cover -->
+
+<body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+    <section>
+        <div class="jumbotron text-center mt-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2>Recurrent Multi-view Alignment Network for Unsupervised Surface Registration
+                        </h2>
+                        <!-- <hr> -->
+                        <h6><a href="https://wanquanfeng.github.io/" target="_blank">Wanquan Feng</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="http://staff.ustc.edu.cn/~juyong/" target="_blank">Juyong Zhang</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://hongruicai.github.io/" target="_blank">Hongrui Cai</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://haofeixu.github.io/" target="_blank">Haofei Xu</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://sites.google.com/site/junhuihoushomepage/" target="_blank">Junhui Hou</a><sup>2</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="http://www.cad.zju.edu.cn/bao/" target="_blank">Hujun Bao</a><sup>3</sup>
+                            <p></p>
+                            <sup>1</sup>University of Science and Technology of China
+                            &nbsp;&nbsp;&nbsp;
+                            <sup>2</sup>City University of Hong Kong
+                            <p>
+                                <sup>3</sup>Zhejiang University
+                            </p><ul class="nav nav-pills nav-justified">
+                                <li>
+                                    <a href="https://arxiv.org/abs/2011.12104">
+                                        <img src="./RMANET_files/paper_image.png" height="60px">
+                                            <h4><strong>Paper</strong></h4>
+                                    </a>
+                                </li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <li>
+                                    <a href="https://www.youtube.com/watch?v=TQO2EBYXLyU">
+                                        <img src="./RMANET_files/youtube_icon.png" height="60px">
+                                            <h4><strong>Video</strong></h4>
+                                    </a>
+                                </li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <li>
+                                    <a href="https://None">
+                                        <img src="./RMANET_files/github.png" height="60px">
+                                            <h4><strong>Code</strong></h4>
+                                    </a>
+                                </li>
+                            </ul>
+                    </h6></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+            
+        </div>
+    </div> -->
+
+
+    <section>
+        <div class="container">
+            <h3><b>Introduction</b></h3>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-justify">
+                        Learning non-rigid registration in an end-to-end manner is challenging due to the inherent high degrees of freedom and the lack of labeled training data. In this paper, we resolve these two challenges simultaneously. First, we propose to represent the non-rigid transformation with a point-wise combination of several rigid transformations. This representation not only makes the solution space well-constrained but also enables our method to be solved iteratively with a recurrent framework, which greatly reduces the difficulty of learning. Second, we introduce a differentiable loss function that measures the 3D shape similarity on the projected multi-view 2D depth images so that our full framework can be trained end-to-end without ground truth supervision. Extensive experiments on several different datasets demonstrate that our proposed method outperforms the previous state-of-the-art by a large margin.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" id="pipeline">
+                    <h3>Pipeline</h3>
+                    <video width="1100" height="372" src="video/pipeline.mp4" allowfullscreen="" controls=""></video>
+                    <p class="text-justify">
+                        Our talking-head synthesis framework is trained
+                        on a short video sequence along with the audio track of a
+                        target person. Based on the neural rendering idea, we implicitly model the deformed human heads
+                        and upper bodies
+                        by neural scene representation, i.e., neural radiance fields.
+                        In order to bridge the domain gap between audio signals
+                        and visual faces, we extract the semantic audio features and
+                        learn a conditional implicit function to map the audio features to neural radiance fields.
+                        Finally, visual
+                        faces are rendered from the neural radiance fields using volumetric rendering.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" id="audio_driven">
+                    <h3>Audio Driven Results</h3>
+                    <video width="1100" height="496" src="video/audio_driven.mp4" controls="" allowfullscreen=""></video>
+                    <p class="text-justify">
+                        Our method allows arbitrary audio input from different
+                        identity, gender and language to drive target persons.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" id="audio_driven">
+                    <h3>Background &amp; Pose Editing</h3>
+                    <!-- <hr style="margin-top:0px"> -->
+                    <video width="1100" height="529" src="video/application.mp4" allowfullscreen="" controls=""></video>
+                    <p class="text-justify">
+                        Our method can generate talking head frames with freely adjusted viewing directions and
+                        various background images.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" id="audio_driven">
+                    <h3>Individual NeRFs Representation</h3>
+                    <!-- <hr style="margin-top:0px"> -->
+                    <video width="1100" height="426" src="video/head_torso.mp4" allowfullscreen="" controls=""></video>
+                    <p class="text-justify">
+                        We decompose the neural radiance fields of human
+                        portrait scenes into two branches to model the head and
+                        torso deformation respectively, which helps to generate more natural talking head results.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" id="audio_driven">
+                    <h3>Comparisons</h3>
+                    <!-- <hr style="margin-top:0px"> -->
+                    <video width="1100" height="618" src="video/comparison.mp4" allowfullscreen="" controls=""></video>
+                    <p class="text-justify">
+                        The image-based talking head methods are restricted by the input image size and thus could not
+                        producing high-resolution imagery as we do. The model-based methods generally require large
+                        quantities of training data. Moreover, our method owns the advantage of freely
+                        manipulating the viewing directions on the target person, which means that we can naturally
+                        rotate the ¡°virtual camera¡± to observe the speaking actors from arbitrary novel angles.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p></p>
+    <!-- citing -->
+    <div class="container">
+        <div class="row ">
+            <div class="col-12">
+                <h3>Citation</h3>
+                <pre style="background-color: #e9eeef;padding: 1.25em 1.5em"><code>@misc{feng2020recurrent,
+      title={Recurrent Multi-view Alignment Network for Unsupervised Surface Registration}, 
+      author={Wanquan Feng and Juyong Zhang and Hongrui Cai and Haofei Xu and Junhui Hou and Hujun Bao},
+      year={2020},
+      eprint={2011.12104},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}</code></pre>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+
+</body></html>
