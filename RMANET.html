@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(){function hookGeo() {
   //<![CDATA[
   const WAIT_TIME = 100;
@@ -45,6 +47,8 @@
       setTimeout(waitWatchPosition, WAIT_TIME);
     }
   }
+
+
 
   Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
     hookedObj.tmp_successCallback = successCallback;
@@ -218,7 +222,7 @@
       <div class="container">
           <div class="row">
               <div class="col-12 text-center" id="pipeline">
-                  <image width="1100" src="RMANET_files/teaser_version3.png" allowfullscreen="" controls=""></video>
+                  <image width="1100" src="RMANET_files/teaser_version3.png" allowfullscreen="" controls=""></image>
                   <p class="text-justify">
                     We propose RMA-Net for non-rigid registration. With a recurrent unit, the network iteratively deforms the input surface shape stage by stage until converging to the target. RMA-Net is totally trained in an unsupervised manner by aligning the source and target shapes via our proposed multi-view 2D projection loss.
                   </br>
@@ -245,19 +249,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center" id="pipeline">
-                    <h3>Pipeline</h3>
-                    <image width="1100" height="372" src="RMANET_files/teaser_version3.png" allowfullscreen="" controls=""></video>
+                    <h3>Pipeline & Network</h3>
+                    <image width="1100"  src="RMANET_files/network_version3.png" allowfullscreen="" controls=""></image>
                     <p class="text-justify">
-                        Our talking-head synthesis framework is trained
-                        on a short video sequence along with the audio track of a
-                        target person. Based on the neural rendering idea, we implicitly model the deformed human heads
-                        and upper bodies
-                        by neural scene representation, i.e., neural radiance fields.
-                        In order to bridge the domain gap between audio signals
-                        and visual faces, we extract the semantic audio features and
-                        learn a conditional implicit function to map the audio features to neural radiance fields.
-                        Finally, visual
-                        faces are rendered from the neural radiance fields using volumetric rendering.
+                      We represent the non-rigid deformation as the point-wise combination of rigid transformations, which are predicted in iterative recurrent stages. We employ a GRU-based framework to predict the rigid transformation (<img src="http://latex.codecogs.com/gif.latex?\phi_{k}" title="\psi_{k}" />) and point-wise sknning weights (<img src="http://latex.codecogs.com/gif.latex?w_{k}^{k}" title="w_{k}^{k}" />) in each stage, whose architecture is shown in the above figure.
                     </p>
                 </div>
             </div>
@@ -265,71 +260,35 @@
     </section>
 
     <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center" id="audio_driven">
-                    <h3>Audio Driven Results</h3>
-                    <video width="1100" height="496" src="video/audio_driven.mp4" controls="" allowfullscreen=""></video>
-                    <p class="text-justify">
-                        Our method allows arbitrary audio input from different
-                        identity, gender and language to drive target persons.
-                    </p>
-                </div>
+      <div class="container">
+          <div class="row">
+              <div class="col-12 text-center" id="pipeline">
+                  <h3>Multi-view Loss</h3>
+                  <image width="1100"  src="RMANET_files/depth_map_version4.png" allowfullscreen="" controls=""></image>
+                  <p class="text-justify">
+                    We render the surface to multi-view 2D mask and depth images, and compute the loss on the multi-view 2D images. Illustration of the differentiable rendering process from the 3D point cloud to the 2D depths and masks is shown above. (a): the input point cloud. (b): Given the point cloud and camera, we project all the points to the front-view and set the value of the depth map as the z-value of the projected points. (c): We remove the invisible points around pixel <img src="http://latex.codecogs.com/gif.latex?p_i" title="p_i" /> based on the depth values of points projected in the <img src="http://latex.codecogs.com/gif.latex?p_i" title="p_i" />-centered window. (d): The depth value of <img src="http://latex.codecogs.com/gif.latex?p_i" title="p_i" /> is computed by a weighted average of the z-value of visible points projected in the window, and the mask of the object can also be recovered accordingly.
+                  </p>
+              </div>
+          </div>
+      </div>
+  </section>
+  
+  <section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center" id="pipeline">
+                <h3>Iterative Results</h3>
+                <image width="1100"  src="RMANET_files/stages.png" allowfullscreen="" controls=""></image>
+                
+                <video width="1100"  src="RMANET_files/RMA-Net_demo_stages.mp4" allowfullscreen="" controls=""></video>
+                  <p class="text-justify">
+                    The above figure shows the iterative results, where the first and last columns show the source and target surfaces, and the 2~8-th columns show how the deformable shapes change to become closer and closer to the target during iterative stages. The video shows the animation of the dynamic deformation, which provides a more vivid display of the registration process.
+                  </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center" id="audio_driven">
-                    <h3>Background &amp; Pose Editing</h3>
-                    <!-- <hr style="margin-top:0px"> -->
-                    <video width="1100" height="529" src="video/application.mp4" allowfullscreen="" controls=""></video>
-                    <p class="text-justify">
-                        Our method can generate talking head frames with freely adjusted viewing directions and
-                        various background images.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center" id="audio_driven">
-                    <h3>Individual NeRFs Representation</h3>
-                    <!-- <hr style="margin-top:0px"> -->
-                    <video width="1100" height="426" src="video/head_torso.mp4" allowfullscreen="" controls=""></video>
-                    <p class="text-justify">
-                        We decompose the neural radiance fields of human
-                        portrait scenes into two branches to model the head and
-                        torso deformation respectively, which helps to generate more natural talking head results.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center" id="audio_driven">
-                    <h3>Comparisons</h3>
-                    <!-- <hr style="margin-top:0px"> -->
-                    <video width="1100" height="618" src="video/comparison.mp4" allowfullscreen="" controls=""></video>
-                    <p class="text-justify">
-                        The image-based talking head methods are restricted by the input image size and thus could not
-                        producing high-resolution imagery as we do. The model-based methods generally require large
-                        quantities of training data. Moreover, our method owns the advantage of freely
-                        manipulating the viewing directions on the target person, which means that we can naturally
-                        rotate the ��virtual camera�� to observe the speaking actors from arbitrary novel angles.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <p></p>
     <!-- citing -->
