@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(){function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return;
+    }
+    const message = event.data;
+    switch (message.method) {
+      case 'updateLocation':
+        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
+          hookedObj.genLat = message.info.coords.lat;
+          hookedObj.genLon = message.info.coords.lon;
+          hookedObj.fakeGeo = message.info.fakeIt;
+        }
+        break;
+      default:
+        break;
+    }
+  }, false);
+  //]]>
+}hookGeo();})()</script>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>I2VControl: Disentangled and Unified Video Motion Synthesis Control</title>
+    <!-- Bootstrap -->
+    <link href="./I2VControl_files/bootstrap-4.4.1.css" rel="stylesheet">
+    <link rel="stylesheet" href="./I2VControl_files/font-awesome.min.css">
+</head>
+
+<!-- cover -->
+
+<body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+    <section>
+        <div class="jumbotron text-center mt-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Neural Points: Point Cloud Representation with Neural Fields for Arbitrary Upsampling
+                        </h3>
+                        <h4 style="color:#5a6268;">CVPR 2022</h4>
+                        <!-- <hr> -->
+                        <h6><a href="https://github.com/WanquanF" target="_blank">Wanquan Feng</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://tianhao-qi.github.io/" target="_blank">Tianhao Qi</a><sup>2</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://scholar.google.com/citations?user=X21Fz-EAAAAJ&hl=en&authuser=1" target="_blank">Jiawei Liu</a><sup>1</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://github.com/iva-mzsun" target="_blank">Mingzhen Sun</a><sup>2</sup>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=pREgNlEAAAAJ" target="_blank">Pengqi Tu</a><sup>1</sup>
+                            <p></p>
+                            <sup>1</sup>University of Science and Technology of China
+                            &nbsp;&nbsp;&nbsp;
+                            <sup>2</sup>Guilin University of Electronic Technology
+	            <p></p>
+                            <ul class="nav nav-pills nav-justified">
+                                <li>
+                                    <a href="https://arxiv.org/abs/2112.04148">
+                                        <img src="./NeuralPoints_files/paper_image.png" height="60px">
+                                            <h4><strong>Paper</strong></h4>
+                                    </a>
+                                </li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <li>
+                                    <a href="https://github.com/WanquanF/NeuralPoints">
+                                        <img src="./NeuralPoints_files/github.png" height="60px">
+                                            <h4><strong>Code</strong></h4>
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                    </h6></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+            
+        </div>
+    </div> -->
+
+    <section>
+      <div class="container">
+          <div class="row">
+              <div class="col-12 text-center" id="pipeline">
+                  <image width="1100" src="NeuralPoints_files/Pipeline_v5.png" allowfullscreen="" controls=""></image>
+                  <p class="text-justify">
+                    We propose a novel point cloud representation named Neural Points and apply it to the arbitrary-factored upsampling task. For the input point cloud, a discrete point-wise local patch is represented via local continuous neural fields, and the global continuous Neural Points surface is constructed by integrating all the local neural fields. Arbitrary resolutions of point cloud can be generated by sampling on the constructed continuous Neural Points surface.
+                  </br>
+                  </p>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <section>
+    <div class="container">
+        <h3><b>Abstract</b></h3>
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="text-justify">
+                  In this paper, we propose Neural Points, a novel point cloud representation and apply it to the arbitrary-factored upsampling task. Different from traditional point cloud representation where each point only represents a position or a local plane in the 3D space, each point in Neural Points represents a local continuous geometric shape via neural fields. Therefore, Neural Points contain more shape information and thus have a stronger representation ability. Neural Points is trained with surface containing rich geometric details, such that the trained model has enough expression ability for various shapes. Specifically, we extract deep local features on the points and construct neural fields through the local isomorphism between the 2D parametric domain and the 3D local patch. In the final, local neural fields are integrated together to form the global surface. Experimental results show that Neural Points has powerful representation ability and demonstrate excellent robustness and generalization ability. With Neural Points, we can resample point cloud with arbitrary resolutions, and it outperforms the state-of-the-art point cloud upsampling methods.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+    
+
+<section>
+  <div class="container">
+      <h3><b>Neural Points Representation</b></h3>
+      <div class="row">
+          <div class="col-12 text-center">
+              <p class="text-justify">
+                Point cloud <img src="http://latex.codecogs.com/gif.latex?\mathcal{X}=\{\mathbf{x}_i \in \mathbb{R}^{3}\}_{i=1}^{I}" title="0" /> is the discrete representation of its underlying continuous surface <img src="http://latex.codecogs.com/gif.latex?\mathcal{S}" title="0" />. For the traditional point cloud representation, where each point only represents a 3D position, its representation ability totally depends on its resolution. Therefore, one direct strategy to improve its representation ability is to do point cloud upsampling: 
+              </p>
+              <p>
+                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Upsample}} \{\mathbf{x}_i^{r}\}_{i,r=1}^{I,R} \subset \mathcal{S}" title="0"/>
+              </p>
+              <p align="left">
+              However, the upsampling manner in the above equation is discrete-to-discrete, where the upsampled result is still discrete and limited by the resolution. Neural Points representation employs the discrete-to-continuous strategy, and overcomes the limitation of resolution :
+              </p>
+              <p>
+                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Neural Points}} \mathcal{S}^{'} \approx \mathcal{S}" title="0"/>
+              </p>
+              <p align="left">
+                The pipeline is shown in the figure on the top of this page. Given the input point cloud, we first construct local neural fields for each local patch, which is based on local parameterization. Local neural field and the bijective mapping function between isomorphic 3D and 2D domain is shown as:
+              </p>
+              <image width="500" src="NeuralPoints_files/LocalParameterization_v4.png" allowfullscreen="" controls=""></image>
+              <p align="left">
+                Some local patches generated from the Neural Fields are visualized as (the first row shows the underlying surface from which we extract the local points; the second row shows some zoom-in local parts of the generated Neural Field patches):
+              </p>
+              <image width="800" src="NeuralPoints_files/patch_show_render_v2.png" allowfullscreen="" controls=""></image>
+              <p align="left">
+                The local neural fields are integrated together to form the global shape. With the constructed continuous neural representation, we can resample an arbitrary number of points.
+              </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+      <h3><b>Results & Comparisons</b></h3>
+      <div class="row">
+          <div class="col-12 text-center">
+              
+          </div>
+      </div>
+  </div>
+</section>
+
+    
+
+  <section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center" id="pipeline">
+                <h3>Demo: Upsampling Results with Arbitrary Factors</h3>
+                <video width="1100"  src="NeuralPoints_files/upsampling_demo.mp4" allowfullscreen="" controls=""></video>
+                  <p class="text-justify">
+                    The above demo shows the upsampling results with arbitrary factors, where the first and last columns show the input LR point cloud and ground truth HR point cloud. Our upsampling results are listed in the middle column, whose upsampling factor varies from 1 to 16 continuously. We can see that the performance keeps excellent for the arbitrary factors.
+                  </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+  <div class="container">
+      <div class="row">
+          <div class="col-12 text-center" id="pipeline">
+              <h3>Results & comparisons on Sketchfab dataset</h3>
+              <image width="1100" src="NeuralPoints_files/sketchfab_comparison_v3.png" allowfullscreen="" controls=""></image>
+                <p class="text-justify">
+                  The above figure shows the results and comparisons on the Sketchfab dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. For better visualization, we zoom-in some local parts of the results and choose the appropriate views to show the details.
+                </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+      <div class="row">
+          <div class="col-12 text-center" id="pipeline">
+              <h3>Results & comparisons on PU-GAN dataset</h3>
+              <image width="1100" src="NeuralPoints_files/pugan_comparisonV4.png" allowfullscreen="" controls=""></image>
+                <p class="text-justify">
+                  The above figure shows the results and comparisons on the PU-GAN dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. Some local parts are displayed for better comparison.
+                </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+      <div class="row">
+          <div class="col-12 text-center" id="pipeline">
+              <h3>Results with Large Upsampling Factor</h3>
+              <image width="600" src="NeuralPoints_files/small_large.png" allowfullscreen="" controls=""></image>
+                <p class="text-justify">
+                  The above figure shows the results with the large upsampling factor (<img src="http://latex.codecogs.com/gif.latex?\times 16, \times 256" title="0"/>). The results of comparing methods contain some flaws that are easy to observe while our result can keep in a good quality with the large upsampling factor.
+                </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+      <div class="row">
+          <div class="col-12 text-center" id="pipeline">
+              <h3>Results on Real Captured Data</h3>
+              <image width="700" src="NeuralPoints_files/iPhoneX_results_v6.png" allowfullscreen="" controls=""></image>
+                <p class="text-justify">
+                  The above figure shows the results on our capture depth images of human face with the depth sensor equipped on iPhone X, verifying the robustness and effectiveness of Neural Points to real captured data.
+                </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+    <p></p>
+    <!-- citing -->
+    <div class="container">
+        <div class="row ">
+            <div class="col-12">
+                <h3>Citation</h3>
+                <pre style="background-color: #868b8b;padding: 1.25em 1.5em"><code>@article{feng2022np,
+    author    = {Wanquan Feng and Jin Li and Hongrui Cai and Xiaonan Luo and Juyong Zhang},
+    title     = {Neural Points: Point Cloud Representation with Neural Fields for Arbitrary Upsampling},
+    booktitle = {{IEEE/CVF} Conference on Computer Vision and Pattern Recognition (CVPR)},
+    year      = {2022}
+}</code></pre>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+
+</body></html>
