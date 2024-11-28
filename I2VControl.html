@@ -235,155 +235,354 @@
       </div>
   </section>
 
-  <!-- <section>
+
+  <section>
     <div class="container">
-        <h3><b>Abstract</b></h3>
-        <div class="row">
-            <div class="col-12 text-center">
-                <p class="text-justify">
-                  In this paper, we propose Neural Points, a novel point cloud representation and apply it to the arbitrary-factored upsampling task. Different from traditional point cloud representation where each point only represents a position or a local plane in the 3D space, each point in Neural Points represents a local continuous geometric shape via neural fields. Therefore, Neural Points contain more shape information and thus have a stronger representation ability. Neural Points is trained with surface containing rich geometric details, such that the trained model has enough expression ability for various shapes. Specifically, we extract deep local features on the points and construct neural fields through the local isomorphism between the 2D parametric domain and the 3D local patch. In the final, local neural fields are integrated together to form the global surface. Experimental results show that Neural Points has powerful representation ability and demonstrate excellent robustness and generalization ability. With Neural Points, we can resample point cloud with arbitrary resolutions, and it outperforms the state-of-the-art point cloud upsampling methods.
-                </p>
-            </div>
+      <div class="row">
+        <div class="col-12 text-center" id="dragging">
+          <h2>Dragging</h2>
+          <p class="text-justify">
+            In the following samples, we <b>drag the movable objects (both translation/rotation; both single/multiple objects)</b> in the input image:
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:33%">Input Image</th>
+                <th style="text-align:center; width:33%">Object Dragging</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/ast_drag.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/man.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/rolling_balls_1.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/ship_drag.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/two_ducks.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dragon_drag.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/two_pigs.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/ufo_drag.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
-</section> -->
-    
-
-<!-- <section>
-  <div class="container">
-      <h3><b>Neural Points Representation</b></h3>
-      <div class="row">
-          <div class="col-12 text-center">
-              <p class="text-justify">
-                Point cloud <img src="http://latex.codecogs.com/gif.latex?\mathcal{X}=\{\mathbf{x}_i \in \mathbb{R}^{3}\}_{i=1}^{I}" title="0" /> is the discrete representation of its underlying continuous surface <img src="http://latex.codecogs.com/gif.latex?\mathcal{S}" title="0" />. For the traditional point cloud representation, where each point only represents a 3D position, its representation ability totally depends on its resolution. Therefore, one direct strategy to improve its representation ability is to do point cloud upsampling: 
-              </p>
-              <p>
-                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Upsample}} \{\mathbf{x}_i^{r}\}_{i,r=1}^{I,R} \subset \mathcal{S}" title="0"/>
-              </p>
-              <p align="left">
-              However, the upsampling manner in the above equation is discrete-to-discrete, where the upsampled result is still discrete and limited by the resolution. Neural Points representation employs the discrete-to-continuous strategy, and overcomes the limitation of resolution :
-              </p>
-              <p>
-                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Neural Points}} \mathcal{S}^{'} \approx \mathcal{S}" title="0"/>
-              </p>
-              <p align="left">
-                The pipeline is shown in the figure on the top of this page. Given the input point cloud, we first construct local neural fields for each local patch, which is based on local parameterization. Local neural field and the bijective mapping function between isomorphic 3D and 2D domain is shown as:
-              </p>
-              <image width="500" src="NeuralPoints_files/LocalParameterization_v4.png" allowfullscreen="" controls=""></image>
-              <p align="left">
-                Some local patches generated from the Neural Fields are visualized as (the first row shows the underlying surface from which we extract the local points; the second row shows some zoom-in local parts of the generated Neural Field patches):
-              </p>
-              <image width="800" src="NeuralPoints_files/patch_show_render_v2.png" allowfullscreen="" controls=""></image>
-              <p align="left">
-                The local neural fields are integrated together to form the global shape. With the constructed continuous neural representation, we can resample an arbitrary number of points.
-              </p>
-          </div>
-      </div>
-  </div>
-</section> -->
+  </section>
 
 
-<!-- <section>
-  <div class="container">
-      <h3><b>Results & Comparisons</b></h3>
-      <div class="row">
-          <div class="col-12 text-center">
-              
-          </div>
-      </div>
-  </div>
-</section> -->
-
-    
-
-  <!-- <section>
+  <section>
     <div class="container">
-        <div class="row">
-            <div class="col-12 text-center" id="pipeline">
-                <h3>Demo: Upsampling Results with Arbitrary Factors</h3>
-                <video width="1100"  src="NeuralPoints_files/upsampling_demo.mp4" allowfullscreen="" controls=""></video>
-                  <p class="text-justify">
-                    The above demo shows the upsampling results with arbitrary factors, where the first and last columns show the input LR point cloud and ground truth HR point cloud. Our upsampling results are listed in the middle column, whose upsampling factor varies from 1 to 16 continuously. We can see that the performance keeps excellent for the arbitrary factors.
-                  </p>
-            </div>
+      <div class="row">
+        <div class="col-12 text-center" id="camera-movement">
+          <h2>Camera Movement</h2>
+          <p class="text-justify">
+            In the following samples, we <b>only move the camera</b> for the input sample:
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:33%">Input Image</th>
+                <th style="text-align:center; width:33%">Camera Movement</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/camera_0.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/camera_1.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/camera_2.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/camera_3.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/camera_4.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
-</section> -->
+  </section>
 
-<!-- <section>
-  <div class="container">
+  <section>
+    <div class="container">
       <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results & comparisons on Sketchfab dataset</h3>
-              <image width="1100" src="NeuralPoints_files/sketchfab_comparison_v3.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results and comparisons on the Sketchfab dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. For better visualization, we zoom-in some local parts of the results and choose the appropriate views to show the details.
-                </p>
-          </div>
+        <div class="col-12 text-center" id="camera-movement-dragging">
+          <h2>Camera Movement + Dragging</h2>
+          <p class="text-justify">
+            In the following samples, we <b>move the camera and drag the movable objects</b> in the input image:
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:34%">Input Image</th>
+                <th style="text-align:center; width:32%">Camera & Object Movement</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/duck_run.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/jellyfish.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/moon_walk.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/polarbear2.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/chaiquan_drag.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/swan.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/wolf.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/ball.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/boat.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/cat.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  </div>
-</section> -->
+    </div>
+  </section>
 
-
-<!-- <section>
-  <div class="container">
+  <section>
+    <div class="container">
       <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results & comparisons on PU-GAN dataset</h3>
-              <image width="1100" src="NeuralPoints_files/pugan_comparisonV4.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results and comparisons on the PU-GAN dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. Some local parts are displayed for better comparison.
-                </p>
-          </div>
+        <div class="col-12 text-center" id="motion-brush">
+          <h2>Motion Brush for Movable Objects</h2>
+          <p class="text-justify">
+            In the following samples, we <b>brush a mask for movable objects</b> in the input image and only set a scalar motion strength:
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:34%">Input Image</th>
+                <th style="text-align:center; width:32%">Brush Mask</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/make_cake.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dog_wash.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/duck_stand.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/play_guitar.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/llama.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dive.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dog_run.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  </div>
-</section> -->
+    </div>
+  </section>
 
-
-<!-- <section>
-  <div class="container">
+  <section>
+    <div class="container">
       <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results with Large Upsampling Factor</h3>
-              <image width="600" src="NeuralPoints_files/small_large.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results with the large upsampling factor (<img src="http://latex.codecogs.com/gif.latex?\times 16, \times 256" title="0"/>). The results of comparing methods contain some flaws that are easy to observe while our result can keep in a good quality with the large upsampling factor.
-                </p>
-          </div>
+        <div class="col-12 text-center" id="motion-brush-visual-effects">
+          <h2>Motion Brush for Visual Effects</h2>
+          <p class="text-justify">
+            In the following samples, we <b>brush a mask for fluids</b> in the input image and only set a scalar motion strength:
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:34%">Input Image</th>
+                <th style="text-align:center; width:32%">Brush Mask</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/chimney.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/explode.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/skeleton.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/steamship.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/wand.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/candle.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/bonfire.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  </div>
-</section> -->
+    </div>
+  </section>
 
-
-<!-- <section>
-  <div class="container">
+  <section>
+    <div class="container">
       <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results on Real Captured Data</h3>
-              <image width="700" src="NeuralPoints_files/iPhoneX_results_v6.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results on our capture depth images of human face with the depth sensor equipped on iPhone X, verifying the robustness and effectiveness of Neural Points to real captured data.
-                </p>
-          </div>
+        <div class="col-12 text-center" id="comprehensive-usage">
+          <h2>Comprehensive Usage for Creation</h2>
+          <p class="text-justify">
+            【Union】We use dragging, camera movement, and motion brush in one single sample. We mask the brush-unit as red and mask the drag-unit as green.
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:33%">Input Image & Mask</th>
+                <th style="text-align:center; width:33%">Controls</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/union_cat.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/union_human.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+  
+          
+          <p class="text-justify">
+            【Hitchcock】We fix the foreground and dolly out the background, creating a Hitchcock-like camera movement effect.
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:34%">Input Image</th>
+                <th style="text-align:center; width:32%">Controls</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dolly_zoom_0.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/dolly_zoom_1.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+  
+          
+          <p class="text-justify">
+            【Surrounding Character】We move the camera around a character and always keep the main character in place, which creates a beautiful dynamic portrait video.
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:34%">Input Image</th>
+                <th style="text-align:center; width:32%">Controls</th>
+                <th style="text-align:center; width:34%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/surrounding_0.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="3"><img src="./I2VControl_files/gif/surrounding_1.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+  
+          
+          <p class="text-justify">
+            【Flowing Hair】We consider the whole image as borderland, set a motion strength, and set the prompt as "flowing in the wind". Then the artistic portraits can have some dynamics.
+          </p>
+          <table class="table" style="width: 98%; margin: auto;">
+            <thead>
+              <tr>
+                <th style="text-align:center; width:25%">Input Image</th>
+                <th style="text-align:center; width:25%">Result</th>
+                <th style="text-align:center; width:25%">Input Image</th>
+                <th style="text-align:center; width:25%">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="2"><img src="./I2VControl_files/gif/hair_0.gif" style="width: 100%; height: auto;"></td>
+                <td colspan="2"><img src="./I2VControl_files/gif/hair_1.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+              <tr>
+                <td colspan="2"><img src="./I2VControl_files/gif/hair_2.gif" style="width: 100%; height: auto;"></td>
+                <td colspan="2"><img src="./I2VControl_files/gif/hair_3.gif" style="width: 100%; height: auto;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  </div>
-</section> -->
+    </div>
+  </section>
 
     <p></p>
-    <!-- <div class="container">
+    <div class="container">
         <div class="row ">
             <div class="col-12">
                 <h3>Citation</h3>
-                <pre style="background-color: #868b8b;padding: 1.25em 1.5em"><code>@article{feng2022np,
-    author    = {Wanquan Feng and Jin Li and Hongrui Cai and Xiaonan Luo and Juyong Zhang},
-    title     = {Neural Points: Point Cloud Representation with Neural Fields for Arbitrary Upsampling},
-    booktitle = {{IEEE/CVF} Conference on Computer Vision and Pattern Recognition (CVPR)},
-    year      = {2022}
+                <pre style="background-color: #868b8b;padding: 1.25em 1.5em"><code>@article{feng2024i2vcontrol,
+    author    = {Wanquan Feng and Tianhao Qi and Jiawei Liu and Mingzhen Sun and Pengqi Tu and Tianxiang Ma and Fei Dai and Songtao Zhao and Siyu Zhou and Qian He},
+    title     = {I2VControl: Disentangled and Unified Video Motion Synthesis Control},
+    booktitle = {arxiv},
+    year      = {2024}
 }</code></pre>
                 <hr>
             </div>
         </div>
-    </div> -->
+    </div>
+
 
 
 
