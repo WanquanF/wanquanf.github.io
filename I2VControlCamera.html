@@ -1,388 +1,961 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I2VControl-Camera</title>
+    <style>
+        :root {
+            --primary: #2563eb;  /* 科技蓝 */
+            --secondary: #4f46e5;
+            --text: #1e293b;
+            --background: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .header-container {
+            background: rgba(255,255,255,0.92);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            position: relative;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .paper-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        /* 霓虹动效主标题 */
+        .animated-title {
+            display: inline-block;
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, 
+                #FF0000, #FF7300, #FFFB00, 
+                #48FF00, #00FFD5, #002BFF, 
+                #7A00FF, #FF00C8, #FF0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 400% 400%;
+            animation: 
+                cameraPan 2s ease-in-out infinite,
+                colorFlow 8s linear infinite;
+        }
+
+        /* 放大副标题 */
+        .subtitle {
+            display: block;
+            font-size: 2.2rem;
+            color: #4a5568;
+            margin-top: 1.2rem;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .authors-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 0.1rem;
+            padding: 0 0.1rem;
+            width: 100%;
+            padding-left: 90px;
+        }
 
 
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(){function hookGeo() {
-  //<![CDATA[
-  const WAIT_TIME = 100;
-  const hookedObj = {
-    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
-    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
-    fakeGeo: true,
-    genLat: 38.883333,
-    genLon: -77.000
-  };
+        .authors-grid-second {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 0.1rem;
+            padding: 0 0.1rem;
+            width: 100%;
+            padding-left: 190px;
+        }
 
-  function waitGetCurrentPosition() {
-    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
-      if (hookedObj.fakeGeo === true) {
-        hookedObj.tmp_successCallback({
-          coords: {
-            latitude: hookedObj.genLat,
-            longitude: hookedObj.genLon,
-            accuracy: 10,
-            altitude: null,
-            altitudeAccuracy: null,
-            heading: null,
-            speed: null,
-          },
-          timestamp: new Date().getTime(),
-        });
-      } else {
-        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+        .author-item {
+            background: rgb(148, 211, 202);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            /* padding: 0.3rem; */
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+            min-width: 0;
+            width: 200px;
+            box-sizing: border-box;
+            text-align: center;  /* 新增居中属性 */
+            display: flex;       /* 启用flex布局 */
+            flex-direction: column;
+            justify-content: center;  /* 垂直居中 */
+            align-items: center;       /* 水平居中 */
+            padding: 0.3rem;           /* 调整内边距 */
+        }
+
+        /* 悬停提示框 */
+        .author-item:hover::after {
+            content: attr(data-bio);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            animation: popup 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 小箭头装饰 */
+        .author-item:hover::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(0,0,0,0.9);
+        }
+
+
+        .author-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #4a5568;
+            /* margin-bottom: 0.4rem; */
+        }
+
+        .author-name a {
+            color: inherit;
+            text-decoration: none;
+            position: relative;
+            padding-right: 4px !important; /* 预留图标空间 */
+        }
+
+
+        .author-meta {
+            position: absolute;
+            right: -20px;
+            top: -5px;
+            display: flex;
+            gap: 2px;
+            /* z-index: 10; */
+        }
+
+        .footnote {
+            color: #3b82f6;
+            font-size: 0.75em;
+            line-height: 1;
+        }
+
+        .envelope {
+            font-size: 0.8em;
+            transform: translateY(-1px);
+            opacity: 0.8;
+        }
+
+        /* 悬停动效 */
+        .author-name:hover .envelope {
+            animation: bounce 0.5s;
+        }
+
+        .affiliation {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .links-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.1rem;
+            margin-top: 0.1rem;
+            height: 30px;
+            color: cyan;
+        }
+
+        .paper-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white !important;
+            text-decoration: none;
+            transition: box-shadow 0.3s;
+        }
+
+        .paper-link:hover {
+            box-shadow: 0 4px 12px rgba(65, 103, 185, 0.3);
+        }
+
+        .conference-banner {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.1);
+            z-index: 1;
+            font-size: 2.3rem;
+        }
+
+        .affiliations {
+            margin-top: 1.5rem;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-size: 0.9em;
+        }
+
+        .affiliation-item {
+            margin: 0.5rem 0;
+            color: #4a5568;
+            /* line-height: 1.6; */
+            padding-left: 80px;
+        }
+
+        .affiliation-marker {
+            color: #3b82f6;
+            font-size: 0.9em;
+            vertical-align: super;
+            margin-right: 0.3em;
+        }
+
+        .institution {
+            letter-spacing: 0.03em;
+        }
+
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .affiliations {
+                padding: 0.8rem;
+                font-size: 0.85em;
+            }
+        }
+        
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* 运镜动画关键帧 */
+        @keyframes cameraPan {
+            0%, 100% { transform: translateX(-20px) rotate(-5deg); }
+            25% { transform: translateX(25px) rotate(6deg); }
+            50% { transform: translateX(-15px) rotate(-4deg); }
+            75% { transform: translateX(20px) rotate(5deg); }
+        }
+
+        /* 彩虹流动动画 */
+        @keyframes colorFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .animated-title {
+                font-size: 2.4rem;
+            }
+            .subtitle {
+                font-size: 1.9rem;
+                max-width: 90%;
+            }
+            .paper-title {
+                font-size: 2rem;
+            }
+            .authors-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .author-item {
+                padding: 1rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .authors-grid {
+                grid-template-columns: repeat(9, 1fr);
+            }
+        }
+
+    </style>
+
+
+    <style>
+      /* 新增样式 */
+      .paper-sections {
+          max-width: 1270px;
+          margin: 2rem auto 0;
       }
-    } else {
-      setTimeout(waitGetCurrentPosition, WAIT_TIME);
-    }
-  }
-
-  function waitWatchPosition() {
-    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
-      if (hookedObj.fakeGeo === true) {
-        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
-        return Math.floor(Math.random() * 10000); // random id
-      } else {
-        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      
+      .paper-section {
+          background: rgba(255,255,255,0.9);
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin: 1.5rem 0;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
-    } else {
-      setTimeout(waitWatchPosition, WAIT_TIME);
-    }
-  }
+      
+      .bib-section pre {
+          background: #f8fafc;
+          padding: 1.2rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          font-family: 'Courier New', monospace;
+          font-size: 0.9em;
+          line-height: 1.5;
+      }
+      
+      .paper-section h2 {
+          color: var(--primary);
+          margin-bottom: 1rem;
+          font-size: 1.5em;
+      }
+      
+      .paper-section ul {
+          padding-left: 1.5rem;
+          color: #4a5568;
+      }
 
+      .teaser-img {
+        width: min(120vw, 960px);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding-left: 120px;
+        padding-right: 127px;
+      }
 
+      .pipeline-img {
+        width: min(120vw, 960px);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding-left: 130px;
+        padding-right: 120px;
+      }
+      
+      @media (max-width: 768px) {
+          .paper-sections {
+              padding: 0 1rem;
+          }
+          .bib-section pre {
+              font-size: 0.8em;
+          }
+      }
+      </style>
 
-  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
-    hookedObj.tmp_successCallback = successCallback;
-    hookedObj.tmp_errorCallback = errorCallback;
-    hookedObj.tmp_options = options;
-    waitGetCurrentPosition();
-  };
-  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
-    hookedObj.tmp2_successCallback = successCallback;
-    hookedObj.tmp2_errorCallback = errorCallback;
-    hookedObj.tmp2_options = options;
-    waitWatchPosition();
-  };
+      <style>
+        .responsive-table {
+          width: 100%;
+          max-width: 800px;
+          margin: 20px auto;
+          border-collapse: collapse;
+        }
+        
+        .responsive-table img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+          border-radius: 4px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        </style>
 
-  const instantiate = (constructor, args) => {
-    const bind = Function.bind;
-    const unbind = bind.bind(bind);
-    return new (unbind(constructor, null).apply(null, args));
-  }
-
-  Blob = function (_Blob) {
-    function secureBlob(...args) {
-      const injectableMimeTypes = [
-        { mime: 'text/html', useXMLparser: false },
-        { mime: 'application/xhtml+xml', useXMLparser: true },
-        { mime: 'text/xml', useXMLparser: true },
-        { mime: 'application/xml', useXMLparser: true },
-        { mime: 'image/svg+xml', useXMLparser: true },
-      ];
-      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
-
-      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
-        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
-        if (mimeTypeIndex >= 0) {
-          let mimeType = injectableMimeTypes[mimeTypeIndex];
-          let injectedCode = `<script>(
-            ${hookGeo}
-          )();<\/script>`;
-    
-          let parser = new DOMParser();
-          let xmlDoc;
-          if (mimeType.useXMLparser === true) {
-            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
-          } else {
-            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+        <style>
+          .toc-section {
+            margin: 2rem 0;
+            border-left: 4px solid #3b82f6;
+            padding-left: 1.5rem;
           }
 
-          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
-            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
-    
-            if (mimeType.useXMLparser === true) {
-              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
-            } else {
-              args[0][0] = xmlDoc.documentElement.outerHTML;
+          .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .toc-link {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #1f2937;
+            transition: background 0.2s;
+          }
+
+          .toc-link:hover {
+            background: #f3f4f6;
+            border-radius: 4px;
+          }
+
+          .toc-number {
+            font-weight: 600;
+            color: #3b82f6;
+          }
+
+
+          .multi-col-toc {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+          }
+
+          .toc-item {
+            break-inside: avoid;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+          }
+
+          .toc-item:hover {
+            background: rgba(59, 246, 146, 0.05);
+          }
+
+          .toc-link {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: #1f2937;
+          }
+
+          .toc-number {
+            font-size: 1.1rem;
+            color: #3b82f6;
+            font-weight: 600;
+          }
+
+          .toc-title {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+          }
+
+          /* 响应式布局 */
+          @media (max-width: 1280px) {
+            .multi-col-toc {
+              grid-template-columns: repeat(3, 1fr);
             }
           }
-        }
-      }
 
-      return instantiate(_Blob, args); // arguments?
-    }
+          @media (max-width: 1024px) {
+            .multi-col-toc {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
 
-    // Copy props and methods
-    let propNames = Object.getOwnPropertyNames(_Blob);
-    for (let i = 0; i < propNames.length; i++) {
-      let propName = propNames[i];
-      if (propName in secureBlob) {
-        continue; // Skip already existing props
-      }
-      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
-      Object.defineProperty(secureBlob, propName, desc);
-    }
+          @media (max-width: 640px) {
+            .multi-col-toc {
+              grid-template-columns: 1fr;
+            }
+          }
+        </style>
 
-    secureBlob.prototype = _Blob.prototype;
-    return secureBlob;
-  }(Blob);
 
-  window.addEventListener('message', function (event) {
-    if (event.source !== window) {
-      return;
-    }
-    const message = event.data;
-    switch (message.method) {
-      case 'updateLocation':
-        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
-          hookedObj.genLat = message.info.coords.lat;
-          hookedObj.genLon = message.info.coords.lon;
-          hookedObj.fakeGeo = message.info.fakeIt;
-        }
-        break;
-      default:
-        break;
-    }
-  }, false);
-  //]]>
-}hookGeo();})()</script>
-    
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>I2VControl-Camera: Precise Video Camera Control with Adjustable Motion Strength</title>
-    <!-- Bootstrap -->
-    <link href="./I2VControlCamera_files/bootstrap-4.4.1.css" rel="stylesheet">
-    <link rel="stylesheet" href="./I2VControlCamera_files/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
-<!-- cover -->
 
-<body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
-    <section>
-        <div class="jumbotron text-center mt-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-13">
-                        <h3 style="font-size: 36px;">I2VControl-Camera: Precise Video Camera Control with Adjustable Motion Strength
-                        </h3>
-                        <!-- <h4 style="color:#5a6268;">CVPR 2022</h4> -->
-                        <!-- <hr> -->
-                        <h6><a href="https://github.com/WanquanF" target="_blank">Wanquan Feng</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://scholar.google.com/citations?user=X21Fz-EAAAAJ&hl=en&authuser=1" target="_blank">Jiawei Liu</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=pREgNlEAAAAJ" target="_blank">Pengqi Tu</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://tianhao-qi.github.io/" target="_blank">Tianhao Qi</a><sup>1,2</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://github.com/iva-mzsun" target="_blank">Mingzhen Sun</a><sup>1,3</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://scholar.google.com/citations?user=AQR7PoYAAAAJ&hl=en" target="_blank">Tianxiang Ma</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://zhaosongtao.com/" target="_blank">Songtao Zhao</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://scholar.google.com/citations?hl=en&user=u9rh8IEAAAAJ" target="_blank">Siyu Zhou</a><sup>1</sup>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="https://scholar.google.com/citations?view_op=list_works&hl=zh-CN&authuser=1&user=9rWWCgUAAAAJ" target="_blank">Qian He</a><sup>1</sup>
-                            <p></p>
-                            <sup>1</sup>ByteDance China
-                            &nbsp;&nbsp;&nbsp;
-                            <sup>2</sup>University of Science and Technology of China
-                            &nbsp;&nbsp;&nbsp;
-                            <sup>3</sup>Institute of automation, Chinese academy of science
-	            <p></p>
-                            <ul class="nav nav-pills nav-justified">
-                                <li>
-                                    <a href="https://arxiv.org/abs/2411.06525">
-                                        <img src="./NeuralPoints_files/paper_image.png" height="60px">
-                                            <h4><strong>Paper</strong></h4>
-                                    </a>
-                                </li>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <li>
-                                    <a href="None">
-                                        <img src="./NeuralPoints_files/github.png" height="60px">
-                                            <h4><strong>Code</strong></h4>
-                                    </a>
-                                </li>
-                                
-                            </ul>
-                    </h6></div>
-                </div>
+<body>
+    <div class="header-container">
+        <h1 class="paper-title">
+            <span class="animated-title">I2VControl-Camera</span>
+            <span class="subtitle">Precise Video Camera Control with Adjustable Motion Strength</span>
+        </h1>
+
+        <div class="conference-banner">
+          🎉🎉🎉 <strong>ICLR 2025</strong> 🎉🎉🎉
+        </div>
+        
+        <div class="authors-grid">
+            <!-- 作者信息 -->
+            <div class="author-item" data-bio="First & corresponding author, working on controllable video generation and 4D generation">
+                <div class="author-name"><a href="https://wanquanf.github.io" target="_blank">Wanquan Feng<span class="author-meta"><sup class="footnote">1,</sup><span class="envelope"><span style="color: #2d3748">📨</span></span></a>
+              </span></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Working on foundation models and downstream tasks of video generation">
+                <div class="author-name"><a href="https://scholar.google.com/citations?user=X21Fz-EAAAAJ&hl=en&authuser=1" target="_blank">Jiawei Liu<span class="author-meta"><sup class="footnote">1</sup></span></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Focusing on commercial-level visual effects based on generative models">
+                <div class="author-name"><a href="https://openreview.net/profile?id=~Pengqi_Tu1" target="_blank">Pengqi Tu<span class="author-meta"><sup class="footnote">1</sup></span></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Research interest lies in consistency techniques for cross-modal image/video generation.">
+                <div class="author-name"><a href="https://tianhao-qi.github.io/" target="_blank">Tianhao Qi<span class="author-meta"><sup class="footnote">1,2</sup></span></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Working on video auto-encoders and generative models">
+                <div class="author-name"><a href="https://github.com/iva-mzsun" target="_blank">Mingzhen Sun<span class="author-meta"><sup class="footnote">1,3</sup></span></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+          
+            <!-- 其他作者按相同格式继续添加 -->
+        </div>
+        <p></p>
+        <div class="authors-grid-second">
+            
+            <div class="author-item" data-bio="Focusing on personalized video generation">
+                <div class="author-name"><a href="https://scholar.google.com/citations?user=AQR7PoYAAAAJ&hl=en" target="_blank">Tianxiang Ma<span class="author-meta"><sup class="footnote">1</sup></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Technical Lead specializing in visual effects (VFX) and image/video generative models and applications">
+                <div class="author-name"><a href="https://openreview.net/profile?id=~Songtao_Zhao1" target="_blank">Songtao Zhao<span class="author-meta"><sup class="footnote">1</sup></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Technical Lead specializing in video generative models and applications">
+                <div class="author-name"><a href="https://openreview.net/profile?id=~SiYu_Zhou3" target="_blank">Siyu Zhou<span class="author-meta"><sup class="footnote">1</sup></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+            <div class="author-item" data-bio="Tech Team Leader of Generative AI for general 2D/3D Technology">
+                <div class="author-name"><a href="https://scholar.google.com/citations?user=9rWWCgUAAAAJ&hl=zh-CN" target="_blank">Qian He<span class="author-meta"><sup class="footnote">1</sup></a></div>
+                <!-- <div class="affiliation">ByteDance</div> -->
+            </div>
+            
+
+            <!-- 其他作者按相同格式继续添加 -->
+        </div>
+
+        <div class="affiliations">
+            <div class="affiliation-item">
+                <sup class="affiliation-marker">1</sup>
+                <span class="institution">ByteDance China</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <sup class="affiliation-marker">2</sup>
+                <span class="institution">University of Science and Technology of China (USTC)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <sup class="affiliation-marker">3</sup>
+                <span class="institution">Institute of Automation, Chinese Academy of Sciences (CASIA)</span>
             </div>
         </div>
+
+        <!-- 论文链接 -->
+        <div class="links-container">
+            <a href="https://arxiv.org/abs/2411.06525" class="paper-link">Paper</a>
+            <a href="#" class="paper-link">Youtube</a>
+            <a href="https://github.com/WanquanF/I2VControl-Camera" class="paper-link">Code</a>
+        </div>
+    </div>
+
+    <!-- 在链接容器之后添加这些内容 -->
+    <div class="paper-sections">
+
+      <section class="toc-section">
+        <h2 class="section-title">Table of Contents (Click for quick navigation)</h2>
+        <nav aria-label="Content navigation">
+          <ul class="multi-col-toc">
+            <li class="toc-item">
+              <a href="#section_overview" class="toc-link">
+                <span class="toc-number">Overview</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_gallery" class="toc-link">
+                <span class="toc-number">Gallery</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_method" class="toc-link">
+                <span class="toc-number">Method and Analysis</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_pixel" class="toc-link">
+                <span class="toc-number">Pixel-level Control</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_combine" class="toc-link">
+                <span class="toc-number">Camera Type Combinations</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_multiobj" class="toc-link">
+                <span class="toc-number">Multiple dynamic objects</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_ms" class="toc-link">
+                <span class="toc-number">Multiple motion strength</span>
+              </a>
+            </li>
+            <li class="toc-item">
+              <a href="#section_dit" class="toc-link">
+                <span class="toc-number">Results on DiT (Seaweed)</span>
+              </a>
+            </li>
+            <!-- 重复7次类似结构 -->
+          </ul>
+        </nav>
+      </section>
+
+
+      <!-- 论文简介区块 -->
+      <section class="paper-section" id="section_overview">
+          <h2 id="overview">🌼 Overview</h2>
+          <p>We propose I2VControl-Camera, a novel camera control method for image-to-video generation, offering <strong>high control precision</strong> and <strong>adjustable motion strength</strong>.</p>
+    
+          <img src="I2VControlCamera_files/assets/teaser_1.png"  class="teaser-img"  alt="Teaser Image">
+
+      </section>
+
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_gallery">
+          <h2>🔥 Gallery</h2>
+              <p>Before the method and analysis, let’s first look at some visual results! For each sample, we manually set the camera movement and adjust it to a suitable motion strength value. The first column is the original input image, the second column is the camera motion trajectory, and the third column is the generated result.</p>          
+              
+                            
+              <table class="responsive-table">
+                <thead>
+                  <tr>
+                    <th style="width:34%">Input</th>
+                    <th style="width:32%">Movement</th>
+                    <th style="width:34%">Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 每组示例独立成行 -->
+                  <tr>
+                    <td colspan="3" ><img src="I2VControlCamera_files/assets/007.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/010.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/001.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/000.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/002.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/006.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/015.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/013.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/012.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/017.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/011.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/009.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/008.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/004.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/014.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/016.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/003.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><img src="I2VControlCamera_files/assets/005.gif"></td>
+                  </tr>
+                  <!-- 其他行按相同模式 -->
+                </tbody>
+              </table>
+              
+      </section>
+
+
+      <section class="paper-section" id="section_method">
+          <h2 id="overview">💡 Method and Analysis</h2>
+
+          <p>Users can control the camera movement with high precision by <strong>converting the camera movement into point trajectories and then executing the control process</strong>. We lift the input image from 2D to 3D as a RGBD point cloud. When the camera moves, the 3D points can be considered as moving in the camera coordinate system. Then we project them onto 2D according to current camera pose to obtain the 2D point trajectory.</p>
+
+          <img src="I2VControlCamera_files/assets/pipeline.png"  class="pipeline-img"  alt="Pipeline Image">
+
+          <p>Moreover, we <strong>apply a scalar value to control the motion strength</strong> of the subjects in the video, which is decoupled from the camera movement. </p>
+
+          <p>The follwing figure shows two samples: the top one demonstrates a pan-left camera movement, while the bottom one shows the camera sliding to the right. For each sample, we show a preview (directly render the RGBD point cloud on to 2D plane according to the extrinsic matrix) and our generated result. We can see that the generated result can almost follow the control signal at the pixel level (can be seen in the green boxes) even when there exists movable object (the cat in the red box).</p>
+
+          <img src="I2VControlCamera_files/assets/pixel_level_control.png"  class="teaser-img"  alt="Pixel Image">
+
+          <p>We test the same camera control signal with different motion strength value. When the motion strength is set as 0, the entire scene is nearly static even when there are movable objects in the figure (polar bear, astronaut, wolf); when the motion strength is large, the main objects moves obviously.</p>
+
+          <img src="I2VControlCamera_files/assets/adjust.png"  class="teaser-img"  alt="Adjust Image">
+
+      </section>
+
+
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_pixel">
+        <h2>🔥 Pixel-level Control & Visual Comparisons</h2>
+            <p>We show our camera control results with ground truth preview here, which demonstrates our pixel-level control capabilities. We also list the results of the comparing methods for the qualitative comparison. We can observe that our control precision is significantly higher than that of comparative methods.</p>          
+            
+                          
+            <table class="responsive-table">
+              <thead>
+                <tr>
+                  <th style="width:25%">Input & GT Preview</th>
+                  <th style="width:25%">CameraCtrl</th>
+                  <th style="width:25%">MotionCtrl</th>
+                  <th style="width:25%">Ours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 每组示例独立成行 -->
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/004-3.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/006-2.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/007-3.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/011-0.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241001223430.gif"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241002000913.gif"></td>
+                  </tr>
+                <!-- 其他行按相同模式 -->
+              </tbody>
+            </table>
+            
+    </section>
+
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_combine">
+        <h2>🔥 Combinations of multiple camera movements</h2>
+            <p>The following samples contain combinations of multiple camera movements.</p>          
+            
+                          
+            <table class="responsive-table">
+              <thead>
+                <tr>
+                  <th style="width:20%"> </th>
+                  <th style="width:20%">Input & GT Preview</th>
+                  <th style="width:20%">CameraCtrl</th>
+                  <th style="width:20%">MotionCtrl</th>
+                  <th style="width:20%">Ours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 每组示例独立成行 -->
+                <tr>
+                  <th width=20% style="text-align:center">move left + pan right + move up + tilt down</th>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241002002519.gif"></td>
+                </tr>
+                <tr>
+                  <th width=20% style="text-align:center">move left + pan right</th>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20240906132533.gif"></td>
+                </tr>
+                <tr>
+                  <th width=20% style="text-align:center">rotate + move up + tilt down</th>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120012823.gif"></td>
+                </tr>
+                <tr>
+                  <th width=20% style="text-align:center">rotate + zoom in</th>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120011336.gif"></td>
+                </tr>
+                <tr>
+                  <th width=20% style="text-align:center">rotate + pan right</th>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120015213.gif"></td>
+                </tr>
+                <!-- 其他行按相同模式 -->
+              </tbody>
+            </table>
+            
     </section>
 
 
-    <!-- <div class="row">
-        <div class="col-md-4 col-md-offset-4 text-center">
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_multiobj">
+        <h2>🔥 Multiple dynamic objects</h2>
+            <p>The following samples contain multiple dynamic objects, where our method can still achieve precise control and natural dynamics.</p>          
             
-        </div>
-    </div> -->
-
-    <!-- <section>
-      <div class="container">
-          <div class="row">
-              <div class="col-12 text-center" id="pipeline">
-                  <image width="1100" src="I2VControl_files/teaser.png" allowfullscreen="" controls=""></image>
-                  <p class="text-justify">
-                    We propose <b>I2VControl</b>, an all-in-one unified framework for image-to-video motion synthesis control. In the illustration, we show several scenarios of disentangled controls, including camera movement (camera dollies in and gets closer to the sculpture), object movement (the astronaut walks forward) and motion brush (smoke flows in the wind, with a given motion strength value). <b>Users can select the control modes according to their requirements, where the control modes can be combined without conflict</b>.
-                  </br>
-                  </p>
-              </div>
-          </div>
-      </div>
-  </section> -->
-
-  <!-- <section>
-    <div class="container">
-        <h3><b>Abstract</b></h3>
-        <div class="row">
-            <div class="col-12 text-center">
-                <p class="text-justify">
-                  In this paper, we propose Neural Points, a novel point cloud representation and apply it to the arbitrary-factored upsampling task. Different from traditional point cloud representation where each point only represents a position or a local plane in the 3D space, each point in Neural Points represents a local continuous geometric shape via neural fields. Therefore, Neural Points contain more shape information and thus have a stronger representation ability. Neural Points is trained with surface containing rich geometric details, such that the trained model has enough expression ability for various shapes. Specifically, we extract deep local features on the points and construct neural fields through the local isomorphism between the 2D parametric domain and the 3D local patch. In the final, local neural fields are integrated together to form the global surface. Experimental results show that Neural Points has powerful representation ability and demonstrate excellent robustness and generalization ability. With Neural Points, we can resample point cloud with arbitrary resolutions, and it outperforms the state-of-the-art point cloud upsampling methods.
-                </p>
-            </div>
-        </div>
-    </div>
-</section> -->
-    
-
-<!-- <section>
-  <div class="container">
-      <h3><b>Neural Points Representation</b></h3>
-      <div class="row">
-          <div class="col-12 text-center">
-              <p class="text-justify">
-                Point cloud <img src="http://latex.codecogs.com/gif.latex?\mathcal{X}=\{\mathbf{x}_i \in \mathbb{R}^{3}\}_{i=1}^{I}" title="0" /> is the discrete representation of its underlying continuous surface <img src="http://latex.codecogs.com/gif.latex?\mathcal{S}" title="0" />. For the traditional point cloud representation, where each point only represents a 3D position, its representation ability totally depends on its resolution. Therefore, one direct strategy to improve its representation ability is to do point cloud upsampling: 
-              </p>
-              <p>
-                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Upsample}} \{\mathbf{x}_i^{r}\}_{i,r=1}^{I,R} \subset \mathcal{S}" title="0"/>
-              </p>
-              <p align="left">
-              However, the upsampling manner in the above equation is discrete-to-discrete, where the upsampled result is still discrete and limited by the resolution. Neural Points representation employs the discrete-to-continuous strategy, and overcomes the limitation of resolution :
-              </p>
-              <p>
-                <img src="http://latex.codecogs.com/gif.latex?\mathcal{S} \xrightarrow{\textrm{Discretize}} \{\mathbf{x}_i\}_{i=1}^{I}  \xrightarrow{\textrm{Neural Points}} \mathcal{S}^{'} \approx \mathcal{S}" title="0"/>
-              </p>
-              <p align="left">
-                The pipeline is shown in the figure on the top of this page. Given the input point cloud, we first construct local neural fields for each local patch, which is based on local parameterization. Local neural field and the bijective mapping function between isomorphic 3D and 2D domain is shown as:
-              </p>
-              <image width="500" src="NeuralPoints_files/LocalParameterization_v4.png" allowfullscreen="" controls=""></image>
-              <p align="left">
-                Some local patches generated from the Neural Fields are visualized as (the first row shows the underlying surface from which we extract the local points; the second row shows some zoom-in local parts of the generated Neural Field patches):
-              </p>
-              <image width="800" src="NeuralPoints_files/patch_show_render_v2.png" allowfullscreen="" controls=""></image>
-              <p align="left">
-                The local neural fields are integrated together to form the global shape. With the constructed continuous neural representation, we can resample an arbitrary number of points.
-              </p>
-          </div>
-      </div>
-  </div>
-</section> -->
-
-
-<!-- <section>
-  <div class="container">
-      <h3><b>Results & Comparisons</b></h3>
-      <div class="row">
-          <div class="col-12 text-center">
-              
-          </div>
-      </div>
-  </div>
-</section> -->
-
-    
-
-  <!-- <section>
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center" id="pipeline">
-                <h3>Demo: Upsampling Results with Arbitrary Factors</h3>
-                <video width="1100"  src="NeuralPoints_files/upsampling_demo.mp4" allowfullscreen="" controls=""></video>
-                  <p class="text-justify">
-                    The above demo shows the upsampling results with arbitrary factors, where the first and last columns show the input LR point cloud and ground truth HR point cloud. Our upsampling results are listed in the middle column, whose upsampling factor varies from 1 to 16 continuously. We can see that the performance keeps excellent for the arbitrary factors.
-                  </p>
-            </div>
-        </div>
-    </div>
-</section> -->
-
-<!-- <section>
-  <div class="container">
-      <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results & comparisons on Sketchfab dataset</h3>
-              <image width="1100" src="NeuralPoints_files/sketchfab_comparison_v3.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results and comparisons on the Sketchfab dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. For better visualization, we zoom-in some local parts of the results and choose the appropriate views to show the details.
-                </p>
-          </div>
-      </div>
-  </div>
-</section> -->
-
-
-<!-- <section>
-  <div class="container">
-      <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results & comparisons on PU-GAN dataset</h3>
-              <image width="1100" src="NeuralPoints_files/pugan_comparisonV4.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results and comparisons on the PU-GAN dataset. The error metric CD (<img src="http://latex.codecogs.com/gif.latex?\times 10^{-5}" title="0"/>) is also given in the bottom. Some local parts are displayed for better comparison.
-                </p>
-          </div>
-      </div>
-  </div>
-</section> -->
-
-
-<!-- <section>
-  <div class="container">
-      <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results with Large Upsampling Factor</h3>
-              <image width="600" src="NeuralPoints_files/small_large.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results with the large upsampling factor (<img src="http://latex.codecogs.com/gif.latex?\times 16, \times 256" title="0"/>). The results of comparing methods contain some flaws that are easy to observe while our result can keep in a good quality with the large upsampling factor.
-                </p>
-          </div>
-      </div>
-  </div>
-</section> -->
-
-
-<!-- <section>
-  <div class="container">
-      <div class="row">
-          <div class="col-12 text-center" id="pipeline">
-              <h3>Results on Real Captured Data</h3>
-              <image width="700" src="NeuralPoints_files/iPhoneX_results_v6.png" allowfullscreen="" controls=""></image>
-                <p class="text-justify">
-                  The above figure shows the results on our capture depth images of human face with the depth sensor equipped on iPhone X, verifying the robustness and effectiveness of Neural Points to real captured data.
-                </p>
-          </div>
-      </div>
-  </div>
-</section> -->
-
-    <p></p>
-    <!-- <div class="container">
-        <div class="row ">
-            <div class="col-12">
-                <h3>Citation</h3>
-                <pre style="background-color: #868b8b;padding: 1.25em 1.5em"><code>@article{feng2022np,
-    author    = {Wanquan Feng and Jin Li and Hongrui Cai and Xiaonan Luo and Juyong Zhang},
-    title     = {Neural Points: Point Cloud Representation with Neural Fields for Arbitrary Upsampling},
-    booktitle = {{IEEE/CVF} Conference on Computer Vision and Pattern Recognition (CVPR)},
-    year      = {2022}
-}</code></pre>
-                <hr>
-            </div>
-        </div>
-    </div> -->
+                          
+            <table class="responsive-table">
+              <thead>
+                <tr>
+                  <th style="width:25%">Input & GT Preview</th>
+                  <th style="width:25%">CameraCtrl</th>
+                  <th style="width:25%">MotionCtrl</th>
+                  <th style="width:25%">Ours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 每组示例独立成行 -->
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120024444.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120030823.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120034631.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241120041540.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/20241121033649.gif"></td>
+                </tr>
+                <!-- 其他行按相同模式 -->
+              </tbody>
+            </table>
+            
+    </section>
 
 
 
-</body></html>
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_ms">
+        <h2>🔥 Multiple motion strength</h2>
+            <p>We show the results under different motion strength. It is evident that as the motion strength increases, the amplitude of the motions enlarged and shows a direct positive correlation with the set values of motion strength. </p>          
+            
+                          
+            <table class="responsive-table">
+              <thead>
+                <tr>
+                  <th style="width:25%">Input & GT Preview</th>
+                  <th style="width:25%">MS=0</th>
+                  <th style="width:25%">MS=200</th>
+                  <th style="width:25%">MS=600</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 每组示例独立成行 -->
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_0.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_1.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_2.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_3.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_4.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_5.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_6.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_7.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" ><img src="I2VControlCamera_files/assets/pixel/range_8.gif"></td>
+                </tr>
+                <!-- 其他行按相同模式 -->
+              </tbody>
+            </table>
+            
+    </section>
+
+
+      <!-- 核心贡献 -->
+      <section class="paper-section" id="section_dit">
+        <h2>🔥 Experiment on DiT base model (Seaweed)</h2>
+            <p>We present some results on another base model, Seaweed, where the results demonstrates the applicability of our method to any base model.</p>          
+            
+                          
+            <table class="responsive-table">
+              <thead>
+                <tr>
+                  <th style="width:25%">Pan</th>
+                  <th style="width:25%">Zoom</th>
+                  <th style="width:25%">Tilt</th>
+                  <th style="width:25%">Rotate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 每组示例独立成行 -->
+                <tr>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_pan.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_zoom.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_tilt.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_rotate.gif"></td>
+                </tr>
+                <tr>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_pan2.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_zoom2.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_tilt2.gif"></td>
+                  <td colspan="1" ><img src="I2VControlCamera_files/assets/pixel/seaweed_rotate2.gif"></td>
+                </tr>
+                <!-- 其他行按相同模式 -->
+              </tbody>
+            </table>
+            
+    </section>
+
+
+      <!-- 参考文献 -->
+      <section class="bib-section">
+          <h2>Citation</h2>
+          <pre>@article{i2vcontrolcamera,
+            title={I2VControl-Camera: Precise Video Camera Control with Adjustable Motion Strength},
+            author={Feng, Wanquan and Liu, Jiawei and Tu, Pengqi and Qi, Tianhao and Sun, Mingzhen and Ma, Tianxiang and Zhao, Songtao and Zhou, Siyu and He, Qian},
+            booktitle={The Tenth International Conference on Learning Representations, (ICLR)},
+            year={2025}
+    }</pre>
+      </section>
+    </div>  
+
+</body>
+</html>
