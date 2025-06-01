@@ -172,31 +172,49 @@
 
 <h2>News</h2>
 
+
 <ul>
+    <!-- 前5条始终显示 -->
     <li>
-        <div class="marker">[2025-02] Four papers accepted to CVPR 2025.</div>
+        <div class="marker">[2025-04] Code of <a href="https://lemonsky1995.github.io/hyperlora/">&nbsp;HyperLoRA&nbsp;</a> released.</div>
     </li>
     <li>
-        <div class="marker">[2024-12] One paper accepted to ICLR 2025.</div>
+        <div class="marker">[2025-02] Code of <a href="https://github.com/iva-mzsun/AR-Diffusion">&nbsp;AR-Diffusion&nbsp;</a> released.</div>
     </li>
     <li>
-        <div class="marker"><div>[2024-11] Received the 'Breakthrough in New Areas' award of ByteDance Intelligent Creation in 2024-Q3.</div></div>
+        <div class="marker">[2025-02] <strong style="color: #d58b1c;">&nbsp;Four papers accepted to CVPR 2025.</strong></div>
     </li>
     <li>
-        <div class="marker"><div>[2024-09] One paper accepted to NeurIPS 2024.</div></div>
+        <div class="marker">[2025-01] Code of <a href="https://github.com/heyongxin233/DeTeCtive">&nbsp;DeTeCtive&nbsp;</a> released.</div>
     </li>
     <li>
-        <div class="marker"><div>[2023-12] Joined Intelligent Creation, ByteDance.</div></div>
+        <div class="marker">[2024-12] <strong style="color: #d58b1c;">&nbsp;One paper accepted to ICLR 2025.</strong></div>
     </li>
     <li>
-        <div class="marker">[2023-07] One paper accepted to SIGGRAPH Asia 2023.</div>
+        <div class="marker">[2024-11] Received the 'Breakthrough in New Areas' award of ByteDance Intelligent Creation in 2024-Q3.</div>
     </li>
-    <div class="news" style="display: inline;">
+    <li>
+        <div class="marker">[2024-09] <strong style="color: #d58b1c;">&nbsp;One paper accepted to NeurIPS 2024.</strong></div>
+    </li>
+    <li>
+        <div class="marker">[2023-12] Joined Intelligent Creation, ByteDance.</div>
+    </li>
+    
+    <!-- 折叠控制按钮 -->
+    <li id="toggleButton" style="cursor: pointer; color: #0066cc;">
+        <div class="marker">▼ Show More</div>
+    </li>
+    
+    <!-- 需要折叠的内容 -->
+    <div id="foldableContent" style="display:none;">
         <li>
-            <div class="marker">[2023-02] One paper accepted to CIMS 2023.</div>
+            <div class="marker">[2023-07] <strong style="color: #d58b1c;">&nbsp;One paper accepted to SIGGRAPH Asia 2023.</strong></div>
         </li>
         <li>
-            <div class="marker">[2022-09] One paper accepted to NeurIPS 2022.</div>
+            <div class="marker">[2023-02] <strong style="color: #d58b1c;">&nbsp;One paper accepted to CIMS 2023.</strong></div>
+        </li>
+        <li>
+            <div class="marker">[2022-09] <strong style="color: #d58b1c;">&nbsp;One paper accepted to NeurIPS 2022.</strong></div>
         </li>
         <li>
             <div class="marker">[2022-07] Joined Y-tech, Kuaishou Technology.</div>
@@ -205,245 +223,35 @@
             <div class="marker">[2022-06] Earned Ph.D. degree from USTC.</div>
         </li>
         <li>
-            <div class="marker">[2022-04] One paper accepted to CVM 2022.</div>
+            <div class="marker">[2022-04] <strong style="color: #d58b1c;">&nbsp;One paper accepted to CVM 2022.</strong></div>
         </li>
         <li>
-            <div class="marker">[2022-03] One paper accepted to CVPR 2022.</div>
+            <div class="marker">[2022-03] <strong style="color: #d58b1c;">&nbsp;One paper accepted to CVPR 2022.</strong></div>
         </li>
         <li>
-            <div class="marker">[2021-09] One paper accepted to TVCG 2021.</div>
+            <div class="marker">[2021-09] <strong style="color: #d58b1c;">&nbsp;One paper accepted to TVCG 2021.</strong></div>
         </li>
         <li>
-            <div class="marker">[2021-03] One paper accepted to CVPR 2021.</div>
+            <div class="marker">[2021-03] <strong style="color: #d58b1c;">&nbsp;One paper accepted to CVPR 2021.</strong></div>
         </li>
     </div>
 </ul>
 
-<div class="show_button">
-    <a href="javascript:toggle_vis(&#39;news&#39;)" id="showText">[Show less]</a>
-</div>
-<!-- 
-<h2>Research Summary</h2>
+<script>
+document.getElementById('toggleButton').addEventListener('click', function() {
+    const content = document.getElementById('foldableContent');
+    const buttonText = this.querySelector('.marker');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        buttonText.innerHTML = '▲ Show Less';
+    } else {
+        content.style.display = 'none';
+        buttonText.innerHTML = '▼ Show More';
+    }
+});
+</script>
 
-    <p>
-    I like advancing Visual Effects and Autonomous Driving, as well as solving fundamental research problems arising from important challenges. I also like to explore the capability boundaries of new techniques on addressing challenges.
-    </p>
-    <p>
-    After the CVPR 2025 submission, I decided to pursue research projects that address crucial problems in the industry with significant impact. Such problems typically lack well-established solutions, necessitating us to explore new techniques and provide new insights. 
-    I would avoid participating in projects that lack both practical value and unresolved problems, as I believe they only produces useless papers, consuming my passion for research.
-    <br>
-    </p><p>
-    The following are my target systems:
-    </p>
-    <ul>
-        <li>
-            <div class="marker"> In the past few years, I have focused on developing two systems: Volumetric Video and Driving Simulator.</div>
-        </li>
-        <li>
-            <div class="marker"> Moving forward, I start working on Egocentric AI, which consists of three sub-systems: Lifelong Memory, World Model and Action Policy. The corresponding applications include AI Toys and AI Glasses.</div>
-        </li>
-    </ul>
-    <p></p>
-
-<div style="display: flex;">
-    <div class="highlight_research_tab" onclick="toggle_research_vis(&#39;volumetric_video&#39;, this)">Volumetric Video</div>
-    <div class="research_tab" onclick="toggle_research_vis(&#39;street_simulator&#39;, this)">Driving Simulator</div>
-    <div class="research_tab" onclick="toggle_research_vis(&#39;egocentric_ai&#39;, this)">Egocentric AI</div>
-</div>
-
-<div class="research_summary" id="volumetric_video" style="display: inline;">
-    <img class="research_picture" src="./Sida Peng_files/volumetric_video.png"> 
-
-    <div class="research_progress">
-        <div class="progress_button" id="volumetric_video_button" style="display: inline;">
-            <a href="javascript:toggle_goal_vis(&#39;volumetric_video_button&#39;, &#39;volumetric_video_goal_tabs&#39;, &#39;lower_cost_capture&#39;)">[Show the research progress]</a>
-        </div>
-
-        <div class="goal_tabs" id="volumetric_video_goal_tabs" style="display: none;">
-            <div style="display: flex;">
-                <div class="goal_tab" id="lower_cost_capture_tab" onclick="toggle_goal_progress_vis(this)">Lower-cost Capture</div>
-                <div class="goal_tab" id="faster_reconstruction_tab" onclick="toggle_goal_progress_vis(this)">Faster Reconstruction</div>
-                <div class="goal_tab" id="lower_storage_tab" onclick="toggle_goal_progress_vis(this)">Lower Storage</div>
-                <div class="goal_tab" id="faster_rendering_tab" onclick="toggle_goal_progress_vis(this)">Faster Rendering</div>
-            </div>
-
-            <div class="goal_progress" id="lower_cost_capture" style="display: none;">
-            </div>
-
-            <div class="goal_progress" id="faster_reconstruction" style="display: none;">
-            </div>
-
-            <div class="goal_progress" id="lower_storage" style="display: none;">
-            </div>
-
-            <div class="goal_progress" id="faster_rendering" style="display: none;">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="research_summary" id="street_simulator" style="display: none;">
-    <img class="research_picture" src="./Sida Peng_files/neural_simulator.png"> 
-
-    <div class="research_progress">
-        <div class="progress_button" id="street_simulator_button" style="display: none;">
-            <a href="javascript:toggle_goal_vis(&#39;street_simulator_button&#39;, &#39;street_simulator_goal_tabs&#39;, &#39;pose&#39;)">[Show the research progress]</a>
-        </div>
-
-        <div class="goal_tabs" id="street_simulator_goal_tabs" style="display: none;">
-            <div style="display: flex;">
-                <div class="goal_tab" id="pose_tab" onclick="toggle_goal_progress_vis(this)">Pose</div>
-                <div class="goal_tab" id="scene_reconstruction_tab" onclick="toggle_goal_progress_vis(this)">Scene Reconstruction</div>
-                <div class="goal_tab" id="scene_generation_tab" onclick="toggle_goal_progress_vis(this)">Scene Generation</div>
-            </div>
-
-            <div class="goal_progress" id="pose" style="display: none;">
-            </div>
-
-            <div class="goal_progress" id="scene_reconstruction" style="display: none;">
-            </div>
-
-            <div class="goal_progress" id="scene_generation" style="display: none;">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="research_summary" id="egocentric_ai" style="display: none;">
-    <img class="research_picture" src="./Sida Peng_files/egocentric_ai.png"> 
-
-    <div class="research_progress">
-        <div class="progress_button" id="egocentric_ai_button" style="display: none;">
-            <a href="javascript:toggle_goal_vis(&#39;egocentric_ai_button&#39;, &#39;egocentric_ai_goal_tabs&#39;, &#39;lifelong_memory&#39;)">[Show the research progress]</a>
-        </div>
-
-        <div class="goal_tabs" id="egocentric_ai_goal_tabs" style="display: none;">
-            <div style="display: flex;">
-                <div class="highlight_goal_tab" id="lifelong_memory_tab" onclick="toggle_goal_progress_vis(this)">Lifelong Memory</div>
-                <div class="goal_tab" id="action_policy_tab" onclick="toggle_goal_progress_vis(this)">Action Policy</div>
-                <div class="goal_tab" id="world_model_tab" onclick="toggle_goal_progress_vis(this)">World Model</div>
-            </div>
-
-            <div class="goal_progress" id="lifelong_memory" style="display: inline;">
-            </div>
-
-            <div class="goal_progress" id="action_policy" style="display: none;">
-            <div class="publication_container"> 
-    <div class="publication_image">
-        <img src="./Sida Peng_files/ready-to-react.png">
-    </div>
-    <div class="publication_title">
-        Ready-to-React: Online Reaction Policy for Two-Character Interaction Generation<br>
-        Zhi Cen, Huaijin Pi, <b>Sida Peng</b>, Qing Shuai, Yujun Shen, Hujun Bao, Xiaowei Zhou, Ruizhen Hu<br>
-        ICLR 2025.<br>
-        [<a href="https://openreview.net/pdf?id=mm0cqJ2O3f">Paper</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/spatial_tracker.png">
-    </div>
-    <div class="publication_title">
-        SpatialTracker: Tracking Any 2D Pixels in 3D Space<br>
-        Yuxi Xiao, Qianqian Wang, Shangzhan Zhang, Nan Xue, <b>Sida Peng</b>, Yujun Shen, Xiaowei Zhou<br>
-        CVPR 2024 <b>Highlight</b>.<br>
-        [<a href="https://arxiv.org/pdf/2404.04319.pdf">Paper</a>][<a href="https://henry123-boy.github.io/SpaTracker/">Project Page</a>][<a href="https://github.com/henry123-boy/SpaTracker">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/efficient_loftr.png">
-    </div>
-    <div class="publication_title">
-        Efficient LoFTR: Semi-Dense Local Feature Matching with Sparse-Like Speed<br>
-        Yifan Wang*, Xingyi He*, <b>Sida Peng</b><sup class="corresponding">†</sup>, Dongli Tan, Xiaowei Zhou<br>
-        CVPR 2024 <b>Highlight</b>.<br>
-        [<a href="https://arxiv.org/pdf/2306.15669.pdf">Paper</a>][<a href="https://zju3dv.github.io/efficientloftr/">Project Page</a>][<a href="https://github.com/zju3dv/efficientloftr">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/gpt_humanise.png">
-    </div>
-    <div class="publication_title">
-        Generating Human Motion in 3D Scenes from Text Descriptions<br>
-        Zhi Cen, Huaijin Pi, <b>Sida Peng</b><sup class="corresponding">†</sup>, Zehong Shen, Minghui Yang, Shuai Zhu, Hujun Bao, Xiaowei Zhou<br>
-        CVPR 2024.<br>
-        [<a href="https://arxiv.org/pdf/2405.07784.pdf">Paper</a>][<a href="https://zju3dv.github.io/text_scene_motion/">Project Page</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/2023_ICCV_Motion_Synthesis.png">
-    </div>
-    <div class="publication_title">
-        Hierarchical Generation of Human-Object Interactions with Diffusion Probabilistic Models<br>
-        Huaijin Pi, <b>Sida Peng</b>, Minghui Yang, Xiaowei Zhou, Hujun Bao<br>
-        ICCV 2023.<br>
-        [<a href="https://arxiv.org/pdf/2310.02242.pdf">Paper</a>][<a href="https://zju3dv.github.io/hghoi">Project Page</a>][<a href="https://github.com/zju3dv/hghoi">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/gen6d.png">
-    </div>
-    <div class="publication_title">
-        Gen6D: Generalizable Model-Free 6-DoF Object Pose Estimation from RGB Images<br>
-        Yuan Liu, Yilin Wen, <b>Sida Peng</b>, Cheng Lin, Xiaoxiao Long, Taku Komura, Wenping Wang<br>
-        ECCV 2022.<br>
-        [<a href="https://arxiv.org/pdf/2204.10776.pdf">Paper</a>][<a href="https://liuyuan-pal.github.io/Gen6D/">Project Page</a>][<a href="https://github.com/liuyuan-pal/Gen6D">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/pvnet_depth_sup.png">
-    </div>
-    <div class="publication_title">
-        Learning to Estimate Object Poses without Real Image Annotations<br>
-        Haotong Lin*, <b>Sida Peng</b>*, Zhize Zhou, Xiaowei Zhou<br>
-        IJCAI 2022.<br>
-        [<a href="https://www.ijcai.org/proceedings/2022/0162.pdf">Paper</a>][<a href="https://github.com/zju3dv/pvnet-depth-sup">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/pvnet_pami.png">
-    </div>
-    <div class="publication_title">
-        PVNet: Pixel-wise Voting Network for 6DoF Object Pose Estimation<br>
-        <b>Sida Peng</b>*, Xiaowei Zhou*, Yuan Liu, Haotong Lin, Qixing Huang, Hujun Bao<br>
-        TPAMI 2020.<br>
-        [<a href="https://ieeexplore.ieee.org/document/9309178">Paper</a>][<a href="https://github.com/zju3dv/pvnet">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/pvnet.png">
-    </div>
-    <div class="publication_title">
-        PVNet: Pixel-wise Voting Network for 6DoF Estimation<br>
-        <b>Sida Peng</b>*,  Yuan Liu*, Qixing Huang, Xiaowei Zhou, Hujun Bao<br>
-        CVPR 2019 <b>Oral presentation</b>.<br>
-        [<a href="http://openaccess.thecvf.com/content_CVPR_2019/papers/Peng_PVNet_Pixel-Wise_Voting_Network_for_6DoF_Pose_Estimation_CVPR_2019_paper.pdf">Paper</a>][<a href="https://zju3dv.github.io/pvnet/supplementary_material.pdf">Supplementary Material</a>][<a href="https://zju3dv.github.io/pvnet/">Project Page</a>][<a href="https://github.com/zju3dv/pvnet">Code</a>]
-    </div>
-</div></div>
-
-            <div class="goal_progress" id="world_model" style="display: none;">
-            <div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/street_crafter.png">
-    </div>
-    <div class="publication_title">
-        StreetCrafter: Street View Synthesis with Controllable Video Diffusion Models<br>
-        Yunzhi Yan, Zhen Xu, Haotong Lin, Haian Jin, Haoyu Guo, Yida Wang, Kun Zhan, Xianpeng Lang, Hujun Bao, Xiaowei Zhou, <b>Sida Peng</b><br>
-        [<a href="https://arxiv.org/abs/2412.13188">Paper</a>][<a href="https://zju3dv.github.io/street_crafter">Project Page</a>][<a href="https://github.com/zju3dv/street_crafter">Code</a>]
-    </div>
-</div><div class="publication_container">
-    <div class="publication_image">
-        <img src="./Sida Peng_files/3dtrajmaster.png">
-    </div>
-    <div class="publication_title">
-        3DTrajMaster: Mastering 3D Trajectory for Multi-Entity Motion in Video Generation<br>
-        Xiao Fu, Xian Liu, Xintao Wang, <b>Sida Peng</b>, Menghan Xia, Xiaoyu Shi, Ziyang Yuan, Pengfei Wan, Di Zhang, Dahua Lin<br>
-        ICLR 2025.<br>
-        [<a href="https://arxiv.org/abs/2412.07759">Paper</a>][<a href="http://fuxiao0719.github.io/projects/3dtrajmaster">Project Page</a>]
-    </div>
-</div></div>
-        </div>
-    </div>
-</div> -->
 
 <h2>
     Publications & Preprints
@@ -474,7 +282,7 @@
         HyperLoRA: Parameter-Efficient Adaptive Generation for Portrait Synthesis<br>
         Mengtian Li<span class="corresponding">*</span>, Jinshu Chen<span class="corresponding">*</span>, <b>Wanquan Feng <span class="corresponding">*†</span></b>, Bingchuan Li, Fei Dai, Songtao Zhao, Qian He<br>
         CVPR 2025.<br>
-        [<a href="none">Paper</a>][<a href="none">Project Page</a>]
+        [<a href="https://arxiv.org/abs/2503.16944">Paper</a>][<a href="https://lemonsky1995.github.io/hyperlora/">Project Page</a>][<a href="https://github.com/bytedance/ComfyUI-HyperLoRA">Code</a>]
     </div>
 </div>
 
@@ -487,7 +295,7 @@
         Mask&sup2;DiT: Dual Mask-based Diffusion Transformer for Multi-Scene Long Video Generation<br>
         Tianhao Qi, Jianlong Yuan, <b>Wanquan Feng</b>, Shancheng Fang, Jiawei Liu, SiYu Zhou, Qian He, Hongtao Xie, Yongdong Zhang<br>
         CVPR 2025.<br>
-        [<a href="none">Paper</a>][<a href="none">Project Page</a>]
+        [<a href="http://arxiv.org/abs/2503.19881">Paper</a>][<a href="https://tianhao-qi.github.io/Mask2DiTProject/">Project Page</a>][<a href="https://github.com/Tianhao-Qi/Mask2DiT">Code</a>]
     </div>
 </div>
 
@@ -499,7 +307,7 @@
         AR-Diffusion: Asynchronous Video Generation with Auto-Regressive Diffusion<br>
         Mingzhen Sun, Weining Wang, Gen Li, Jiawei Liu, Jiahui Sun, <b>Wanquan Feng</b>, Shanshan Lao, SiYu Zhou, Qian He, Jing Liu<br>
         CVPR 2025.<br>
-        [<a href="none">Paper</a>][<a href="none">Project Page</a>]
+        [<a href="https://arxiv.org/abs/2503.07418">Paper</a>][<a href="https://iva-mzsun.github.io/AR-Diffusion">Project Page</a>][<a href="https://github.com/iva-mzsun/AR-Diffusion">Code</a>]
     </div>
 </div>
 
@@ -511,7 +319,7 @@
         AnyDressing: Customizable Multi-Garment Virtual Dressing via Latent Diffusion Models<br>
         Xinghui Li, Qichao Sun, Pengze Zhang, Fulong Ye, Zhichao Liao, <b>Wanquan Feng <span class="corresponding">†</span></b>, Songtao Zhao <span class="corresponding">†</span>, Qian He<br>
         CVPR 2025.<br>
-        [<a href="https://arxiv.org/abs/2412.04146">Paper</a>][<a href="https://crayon-shinchan.github.io/AnyDressing/">Project Page</a>]
+        [<a href="https://arxiv.org/abs/2412.04146">Paper</a>][<a href="https://crayon-shinchan.github.io/AnyDressing/">Project Page</a>][<a href="https://github.com/Crayon-Shinchan/AnyDressing">Code</a>]
     </div>
 </div>
 
@@ -554,7 +362,7 @@
     DeTeCtive: Detecting AI-generated Text via Multi-Level Contrastive Learning<br>
     Xun Guo, Shan Zhang, Yongxin He, Ting Zhang, <b>Wanquan Feng</b>, Haibin Huang <span class="corresponding">†</span>, Chongyang Ma<br>
     NeurIPS 2024.<br>
-      [<a href="https://arxiv.org/abs/2410.20964v1">Paper</a>][<a href="https://github.com/heyongxin233/DeTeCtive">Code</a>]
+      [<a href="https://arxiv.org/abs/2410.20964v1">Paper</a>][<a href="https://github.com/heyongxin233/DeTeCtive">Code</a>][<a href="https://github.com/WanquanF/I2VControl-Camera">Code</a>]
   </div>
   </div>
 
